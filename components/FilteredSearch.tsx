@@ -1,6 +1,6 @@
-import React, { ReactNode, useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { VariableSizeList } from 'react-window';
-import { List, ListItemButton, ListSubheader, Typography } from '@mui/material';
+import { ListItemButton, ListSubheader, Typography } from '@mui/material';
 import { AllezSearchItemRequirements } from './AllezSearch';
 
 type FilteredSearch<T> = {
@@ -28,6 +28,8 @@ export const FilteredSearch = <T extends AllezSearchItemRequirements>(props: Fil
     });
     const [headerHeight, setHeaderHeight] = useState(0);
 
+    // TODO: Figure out how to capture a change of container dimensions in dependency array
+    // good luck with that one...
     const getContainerDimensions = useCallback((div: HTMLDivElement | null) => {
         if (div) setContainerDimensions({ h: div.offsetHeight, w: div.offsetWidth });
     }, []);

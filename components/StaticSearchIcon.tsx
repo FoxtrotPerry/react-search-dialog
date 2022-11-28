@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTheme } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 

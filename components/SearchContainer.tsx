@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { alpha, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 

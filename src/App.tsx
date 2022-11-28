@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import './App.css';
 import {
@@ -10,7 +10,8 @@ import {
     Toolbar,
     Typography,
 } from '@mui/material';
-import { AllezSearch } from '../components/AllezSearch';
+// import { AllezSearch } from '../components/AllezSearch';
+import { AllezSearch } from '@components';
 
 export type Client = {
     label: string;
@@ -26,7 +27,7 @@ function App() {
     useEffect(() => {
         if (clients.length === 0) {
             const newClients = [];
-            for (let i = 0; i < 500; i++) {
+            for (let i = 0; i < 5000; i++) {
                 newClients.push({
                     label: faker.name.fullName(),
                     id: faker.datatype.uuid(),

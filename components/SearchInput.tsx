@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { InputBase, InputBaseProps, SxProps, useTheme } from '@mui/material';
 
 interface SearchInputProps extends InputBaseProps {

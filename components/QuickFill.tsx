@@ -1,4 +1,3 @@
-import React from 'react';
 import { List, ListSubheader } from '@mui/material';
 import { QuickFillListItem } from './QuickFillListItem';
 import { AllezSearchItemRequirements } from './AllezSearch';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { ListItemButton, Stack, Typography } from '@mui/material';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import { AllezSearchItemRequirements } from './AllezSearch';
