@@ -10,7 +10,6 @@ import {
     Toolbar,
     Typography,
 } from '@mui/material';
-// import { AllezSearch } from '../components/AllezSearch';
 import { AllezSearch } from '@components';
 
 export type Client = {

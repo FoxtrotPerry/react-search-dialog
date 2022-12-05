@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
-import { alpha, useTheme } from '@mui/material';
-import { Box } from '@mui/system';
+import { alpha, Box, useTheme } from '@mui/material';
 
 type SearchContainerProps = {
     children: ReactNode;
