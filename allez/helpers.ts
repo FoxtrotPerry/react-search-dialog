@@ -36,7 +36,7 @@ export const addAllezRecent = <T extends AllezSearchItemRequirements>(recent: T)
         setAllezRecents([recent, ...newRecents]);
     } else {
         // otherwise, just add the new recent to the top of the list
-        const newRecents = [recent, ...recents];
+        const newRecents = [recent, ...recents].slice(0, 10);
         setAllezRecents(newRecents);
     }
     return getAllezRecents<T>();

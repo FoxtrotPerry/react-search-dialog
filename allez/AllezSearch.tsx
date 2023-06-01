@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Fuse from 'fuse.js';
 import {
     Button,
@@ -7,7 +7,6 @@ import {
     Divider,
     Grid,
     IconButton,
-    ListSubheader,
     Stack,
     useMediaQuery,
     useTheme,
@@ -44,7 +43,7 @@ export type AllezSearchProps<T> = {
     quickFillItems?: T[];
     maxHeight?: React.CSSProperties['maxHeight'];
     maxWidth?: React.CSSProperties['maxWidth'];
-    showRecents?: boolean;
+    noHistory?: boolean;
     onItemSelect: (item: T) => void;
     renderResult?: (result: T, onItemSelectCallback: () => void) => JSX.Element;
     renderRecent?: (recent: T, onItemSelectCallback: () => void) => JSX.Element;
@@ -56,7 +55,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
     quickFillItems,
     maxHeight,
     maxWidth,
-    showRecents = true,
+    noHistory = false,
     onItemSelect,
     renderResult,
     renderRecent,
@@ -145,7 +144,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
     const onItemSelectCallback = useCallback((item: T) => {
         console.log('onItemSelectCallback', item);
         setOpen(false);
-        if (showRecents) {
+        if (!noHistory) {
             const newRecents = addAllezRecent(item);
             setRecentSearches(newRecents);
         }
