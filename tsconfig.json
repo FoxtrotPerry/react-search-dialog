@@ -2,8 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-        "@components": ["components/"],
-        "@components/*": ["components/*"],
+        "@allez": ["allez/"],
+        "@allez/*": ["allez/*"],
         "@src": ["src/"],
         "@src/*": ["src/*"]
     },
@@ -23,6 +23,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": ["allez/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

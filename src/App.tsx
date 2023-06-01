@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import './App.css';
 import {
@@ -10,7 +10,7 @@ import {
     Toolbar,
     Typography,
 } from '@mui/material';
-import { AllezSearch } from '@components';
+import { AllezSearch } from '../allez';
 
 export type Client = {
     label: string;
@@ -25,7 +25,7 @@ function App() {
 
     useEffect(() => {
         if (clients.length === 0) {
-            const newClients = [];
+            const newClients: Client[] = [];
             for (let i = 0; i < 5000; i++) {
                 newClients.push({
                     label: faker.name.fullName(),
@@ -44,17 +44,18 @@ function App() {
 
     return (
         <div className="App">
-            <AppBar>
+            <AppBar color="transparent">
                 <Toolbar sx={{ justifyContent: 'center' }}>
                     <AllezSearch
                         items={clients}
+                        maxWidth={1000}
                         quickFillItems={clients.slice(0, 10)}
                         onItemSelect={onItemSelect}
-                        renderResult={(item) => (
+                        renderResult={(item, onItemSelectCallback) => (
                             <ListItemButton
                                 dense
                                 onClick={() => {
-                                    onItemSelect(item);
+                                    onItemSelectCallback();
                                 }}
                             >
                                 <Stack

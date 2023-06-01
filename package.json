@@ -1,13 +1,17 @@
 {
   "name": "allez",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A simple, performant, all-in-one search engine for your React app.",
+  "main": "dist/index.js",
   "type": "module",
   "author": {
     "name": "Caleb Perry",
     "url": "https://github.com/foxtrotperry",
     "email": "caleb@foxtrotperry.com"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -17,15 +21,21 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@faker-js/faker": "^7.6.0",
-    "@mui/core": "^5.0.0-alpha.54",
+    "@mui/base": "^5.0.0-beta.2",
     "@mui/icons-material": "^5.10.14",
-    "@mui/material": "^5.10.14",
+    "@mui/material": "^5.13.2",
     "fuse.js": "^6.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-window": "^1.8.8"
   },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.1",
+    "@types/node": "^20.2.5",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@types/react-window": "^1.8.5",
@@ -36,7 +46,9 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
+    "path": "^0.12.7",
     "prettier": "^2.7.1",
+    "rollup-plugin-typescript-paths": "^1.4.0",
     "typescript": "^4.6.4",
     "vite": "^3.2.3",
     "vite-tsconfig-paths": "^3.6.0"
