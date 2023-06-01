@@ -25,7 +25,7 @@ export const RecentSearches = <T extends AllezSearchItemRequirements>(props: Rec
                 <ListSubheader component="div">Recents</ListSubheader>
                 {toolbarElements}
             </Stack>
-            {recents.length === 0 ? (
+            {recents.length > 0 ? (
                 recents.map((item) => (
                     <div key={typeof item === 'string' ? `${item}` : `${item.label}`}>
                         {renderRecent ? (
