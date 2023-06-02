@@ -1,16 +1,35 @@
 import { ListSubheader, Stack, Typography } from '@mui/material';
-import { AllezSearchItemRequirements, AllezSearchProps } from './AllezSearch';
+import { AllezSearchItemRequirements, AllezSearchProps, ItemHeight } from './AllezSearch';
 import { DefaultListItem } from './DefaultListItem';
 
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 
 type RecentSearchProps<T> = {
+    /**
+     * List of recently selected items.
+     */
     recents: T[];
+    /**
+     * Height of each item in the list.
+     */
+    itemHeight: ItemHeight;
+    /**
+     * Callback for when an item is selected.
+     */
     onItemSelect: AllezSearchProps<T>['onItemSelect'];
+    /**
+     * Optional render function for recent selections.
+     */
     renderRecent?: AllezSearchProps<T>['renderResult'];
+    /**
+     * Optional toolbar elements to display above the list of recents.
+     */
     toolbarElements?: React.ReactNode;
 };
 
+/**
+ * Returns list of recent searches with a header and optional toolbar elements.
+ */
 export const RecentSearches = <T extends AllezSearchItemRequirements>(props: RecentSearchProps<T>) => {
     const { recents, toolbarElements, onItemSelect, renderRecent } = props;
     return (
@@ -41,7 +60,13 @@ export const RecentSearches = <T extends AllezSearchItemRequirements>(props: Rec
                     </div>
                 ))
             ) : (
-                <Stack width="100%" alignItems="center" mt={12} style={{ color: 'lightgray' }}>
+                <Stack
+                    width="100%"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    style={{ color: 'lightgray', height: '33%' }}
+                >
                     <AllInclusiveIcon />
                     <Typography variant="body2">No recent searches</Typography>
                 </Stack>

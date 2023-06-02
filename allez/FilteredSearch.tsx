@@ -1,11 +1,13 @@
 import { useLayoutEffect, useState } from 'react';
 import { VariableSizeList } from 'react-window';
 import { ListSubheader } from '@mui/material';
-import { AllezSearchItemRequirements, AllezSearchProps } from './AllezSearch';
+import { AllezSearchItemRequirements, AllezSearchProps, ItemHeight } from './AllezSearch';
 import { DefaultListItem } from './DefaultListItem';
+import { getItemLabel } from './helpers';
 
 type FilteredSearch<T> = {
     searchResults: T[];
+    itemHeight: ItemHeight;
     onItemSelect: AllezSearchProps<T>['onItemSelect'];
     renderResult?: AllezSearchProps<T>['renderResult'];
 };
@@ -23,6 +25,9 @@ type ContainerLengthWidth = {
 const ALLEZ_SEARCH_RESULTS_HEADER_ID = 'allez-search-results-header';
 const ALLEZ_SEARCH_RESULTS_CONTAINER_ID = 'allez-search-results-container';
 
+/**
+ * Returns a list of search results with a basic header.
+ */
 export const FilteredSearch = <T extends AllezSearchItemRequirements>(props: FilteredSearch<T>) => {
     const [containerDimensions, setContainerDimensions] = useState<ContainerLengthWidth>({
         h: 0,
@@ -30,6 +35,12 @@ export const FilteredSearch = <T extends AllezSearchItemRequirements>(props: Fil
     });
     const [headerHeight, setHeaderHeight] = useState(0);
 
+    /**
+     * Sets up and tears down the window resize listener to update the container dimensions.
+     *
+     * This is necessary because the virtualized list needs explicit height and width values
+     * that we calculate using these dimensions.
+     */
     useLayoutEffect(() => {
         const updateSize = () => {
             const containerDimensions = document
@@ -55,25 +66,31 @@ export const FilteredSearch = <T extends AllezSearchItemRequirements>(props: Fil
         return () => window.removeEventListener('resize', updateSize);
     }, []);
 
+    /**
+     * Renders a list item in the virtualized list.
+     * @param index The index of the item to render.
+     * @param style The style to apply to the item's root element.
+     */
     const renderWindowListItem = ({ index, style }: RenderWindowListItemParams) => {
         const result = props.searchResults[index];
         return (
-            <div
-                key={typeof result === 'string' ? `${result}-${index}` : `${result.label}`}
-                style={style}
-            >
-                {props.renderResult ? (
-                    props.renderResult(result, () => {
-                        props.onItemSelect(result);
-                    })
-                ) : (
-                    <DefaultListItem
-                        item={result}
-                        onClick={() => {
+            <div key={`li-${getItemLabel(result)}`} style={style}>
+                {
+                    // If the user has provided a custom render function, use it.
+                    props.renderResult ? (
+                        props.renderResult(result, () => {
                             props.onItemSelect(result);
-                        }}
-                    />
-                )}
+                        })
+                    ) : (
+                        // Otherwise, use the default list item.
+                        <DefaultListItem
+                            item={result}
+                            onClick={() => {
+                                props.onItemSelect(result);
+                            }}
+                        />
+                    )
+                }
             </div>
         );
     };

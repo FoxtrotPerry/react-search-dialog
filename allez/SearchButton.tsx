@@ -3,7 +3,15 @@ import SearchIcon from '@mui/icons-material/Search';
 import { HotkeyChip } from './HotkeyChip';
 
 type SearchButtonProps = {
+    /**
+     * Props to pass to the button component.
+     * @see https://mui.com/material-ui/api/button/#props
+     */
     buttonProps: ButtonProps;
+    /**
+     * If true, the button will be rendered as just an icon button to conserve space.
+     * @default false
+     */
     mobile?: boolean;
 };
 
@@ -16,9 +24,8 @@ export const SearchButton = ({ buttonProps, mobile }: SearchButtonProps) => {
     ) : (
         <Button
             variant="outlined"
-            color="primary"
-            sx={{ borderRadius: theme.shape.borderRadius, padding: 1 }}
             {...buttonProps}
+            sx={{ borderRadius: theme.shape.borderRadius, padding: 1, ...buttonProps.sx }}
         >
             <Stack spacing={1} direction="row">
                 <SearchIcon />

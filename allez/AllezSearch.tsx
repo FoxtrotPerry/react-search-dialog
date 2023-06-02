@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Fuse from 'fuse.js';
 import {
     Button,
+    ButtonProps,
     debounce,
     Dialog,
     Divider,
@@ -11,47 +12,130 @@ import {
     useMediaQuery,
     useTheme,
 } from '@mui/material';
+
 import { QuickFill } from './QuickFill';
 import { FilteredSearch } from './FilteredSearch';
 import { SearchInput } from './SearchInput';
 import { SearchButton } from './SearchButton';
+import { RecentSearches } from './RecentSearches';
+import { addAllezRecent, clearAllezRecents, getAllezRecents } from './helpers';
 
 import { PaddedIcon } from './PaddedIcon';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
-import { RecentSearches } from './RecentSearches';
-import { addAllezRecent, clearAllezRecents, getAllezRecents } from './helpers';
 
 const ALLEZ_SEARCH_INPUT_ID = 'allez-search-input';
 const ALLEZ_POPOVER_ID = 'allez-popover';
 
 // TODO: implement variable row heights using this enum to support react-window's itemSize() function
-export enum SearchResultHeightSize {
+/**
+ * List item height preset values
+ */
+export enum ItemHeightPreset {
     SMALL = 24,
     MEDIUM = 32,
     LARGE = 40,
     XLARGE = 48,
 }
 
-export type SearchResultHeight = SearchResultHeightSize | number;
+/**
+ * Type that describes the height of each search / recent list item
+ */
+export type ItemHeight = ItemHeightPreset | number;
 
+/**
+ * Type that every item passed into the `items` prop must extend
+ */
 export type AllezSearchItemRequirements = { label: string } | string;
 
 export type AllezSearchProps<T> = {
-    placeholder?: string;
+    /**
+     * List of items to search through.
+     *
+     * **NOTE: Each item must have a `label` property or be a string!**
+     *
+     * This constraint is enforced for two main reasons:
+     * 1. So that the search engine has a property it can depend on being present to
+     * use when searching
+     * 2. When using the default `renderResult` function, it can assume that is the
+     * item isn't a string, that is can use the `label` property to display the item
+     * @see AllezSearchItemRequirements
+     */
     items: T[];
+    /**
+     * Props passed to the search button that opens main search dialog
+     * @see ButtonProps
+     */
+    buttonProps?: ButtonProps;
+    /**
+     * Place holder displayed in the search input when empty
+     * @default 'Search'
+     */
+    placeholder?: string;
+    /**
+     * Height of each search result item
+     * @default ItemHeightPreset.LARGE
+     * @see ItemHeight
+     */
+    itemHeight?: ItemHeight;
+    /**
+     * List of items to display in the quick fill section of the search dialog
+     */
     quickFillItems?: T[];
+    /**
+     * Maximum height of the search dialog
+     */
     maxHeight?: React.CSSProperties['maxHeight'];
+    /**
+     * Maximum width of the search dialog
+     */
     maxWidth?: React.CSSProperties['maxWidth'];
+    /**
+     * Whether or not to show recent searches
+     */
     noHistory?: boolean;
+    /**
+     * Callback function that is called when a search result item is selected
+     * @param item The item that was selected
+     */
     onItemSelect: (item: T) => void;
+    /**
+     * Function that renders each search result item
+     * @param result The item to render
+     * @param onItemSelectCallback Callback function that should be called when the item is selected
+     * @returns JSX.Element
+     */
     renderResult?: (result: T, onItemSelectCallback: () => void) => JSX.Element;
+    /**
+     * Function that renders each recent search item
+     * @param recent The item to render
+     * @param onItemSelectCallback Callback function that should be called when the item is selected
+     * @returns JSX.Element
+     */
     renderRecent?: (recent: T, onItemSelectCallback: () => void) => JSX.Element;
 };
 
+/**
+ * All in one search component!
+ *
+ * **Required props:**
+ * - `items` - List of items to search through. Each item must have a `label` property or be a string
+ * - `onItemSelect` - Callback function that is fired when a search result item is selected
+ *
+ * **Recommended optional props:**
+ * - `renderResult` - Function that renders each search result item
+ * - `renderRecent` - Function that renders each recent search item
+ * - `quickFillItems` - List of items to display in the quick fill section of the search dialog
+ * - `itemHeight` - Height of each search result / recent search item
+ *
+ * @see AllezSearchProps
+ * @returns JSX.Element
+ */
 export const AllezSearch = <T extends AllezSearchItemRequirements>({
-    placeholder,
     items,
+    buttonProps,
+    placeholder,
+    itemHeight: itemHeight = ItemHeightPreset.LARGE,
     quickFillItems,
     maxHeight,
     maxWidth,
@@ -93,6 +177,10 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
         searchEngine?.setCollection(items);
     }, [items]);
 
+    /**
+     * Updates the search results state when the search text changes.
+     * When search text is empty, all items are displayed (useful when the noHistory prop is evoked)
+     */
     useEffect(() => {
         if (searchText === '') {
             setSearchResults(items);
@@ -101,6 +189,12 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
         }
     }, [searchText, items]);
 
+    /**
+     * Setups up and tears down the keydown event listeners that:
+     * - Opens the search dialog when the user presses ctrl + k
+     * - Close the search dialog when the user presses escape
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+     */
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             switch (e.key) {
@@ -128,6 +222,10 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
         };
     }, []);
 
+    /**
+     * Handles the click event on a quick fill item by updating the search text and
+     * input value to the item's label if item is an object or value otherwise
+     */
     const onQuickFillItemClick = useCallback(
         (item: T) => {
             if (allezInputRef.current !== null) {
@@ -141,8 +239,11 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
         [setSearchText]
     );
 
+    /**
+     * Handles the click event on a search result item by calling the onItemSelect callback
+     * and adding the item to the recent searches list if the noHistory prop is not evoked
+     */
     const onItemSelectCallback = useCallback((item: T) => {
-        console.log('onItemSelectCallback', item);
         setOpen(false);
         if (!noHistory) {
             const newRecents = addAllezRecent(item);
@@ -155,6 +256,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
         <>
             <SearchButton
                 buttonProps={{
+                    ...buttonProps,
                     onClick: () => {
                         setOpen(true);
                     },
@@ -171,8 +273,8 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
                 PaperProps={{
                     sx: {
                         width: '100%',
-                        maxWidth: isSmallScreen ? 'unset' : maxWidth ?? theme.breakpoints.values.md,
                         height: '100%',
+                        maxWidth: isSmallScreen ? 'unset' : maxWidth ?? theme.breakpoints.values.md,
                         maxHeight: isSmallScreen ? 'unset' : maxHeight ?? theme.breakpoints.values.sm,
                     },
                 }}
@@ -184,7 +286,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
                         <SearchInput
                             id={ALLEZ_SEARCH_INPUT_ID}
                             ref={allezInputRef}
-                            placeholder={placeholder !== undefined ? placeholder : 'Allez!'}
+                            placeholder={placeholder !== undefined ? placeholder : 'Search'}
                             inputProps={{ 'aria-label': 'search' }}
                             onClick={() => {
                                 setOpen(true);
@@ -202,7 +304,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
                     </Stack>
                     <Divider />
                     <Grid container sx={{ height: '100%' }}>
-                        {quickFillItems && (
+                        {quickFillItems && !isSmallScreen && (
                             <Grid item xs={3}>
                                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
                                     <QuickFill
@@ -213,16 +315,18 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
                                 </div>
                             </Grid>
                         )}
-                        <Grid item xs={quickFillItems ? 9 : 12}>
-                            {searchResults.length > 0 && searchText.length > 0 ? (
+                        <Grid item xs={true}>
+                            {(searchResults.length > 0 && searchText.length > 0) || noHistory ? (
                                 <FilteredSearch
                                     searchResults={searchResults}
+                                    itemHeight={itemHeight}
                                     onItemSelect={onItemSelectCallback}
                                     renderResult={renderResult}
                                 />
                             ) : (
                                 <RecentSearches
                                     recents={recentSearches}
+                                    itemHeight={itemHeight}
                                     onItemSelect={onItemSelectCallback}
                                     renderRecent={renderRecent}
                                     toolbarElements={

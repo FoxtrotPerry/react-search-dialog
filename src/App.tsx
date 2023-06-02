@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import './App.css';
-import {
-    AppBar,
-    Button,
-    ListItemButton,
-    ListItemText,
-    Stack,
-    Toolbar,
-    Typography,
-} from '@mui/material';
+import { Button, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import { AllezSearch } from '../allez';
 
 export type Client = {
@@ -44,49 +36,41 @@ function App() {
 
     return (
         <div className="App">
-            <AppBar color="transparent">
-                <Toolbar sx={{ justifyContent: 'center' }}>
-                    <AllezSearch
-                        items={clients}
-                        maxWidth={1000}
-                        quickFillItems={clients.slice(0, 10)}
-                        onItemSelect={onItemSelect}
-                        renderResult={(item, onItemSelectCallback) => (
-                            <ListItemButton
-                                dense
-                                onClick={() => {
-                                    onItemSelectCallback();
-                                }}
-                            >
-                                <Stack
-                                    direction="row"
-                                    display="flex"
-                                    justifyContent="space-between"
-                                    sx={{ width: '100%' }}
-                                >
-                                    <ListItemText sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Typography>
-                                            {`${item.label} - ${item.lastVisit.toDateString()}`}
-                                        </Typography>
-                                    </ListItemText>
-                                    <div>
-                                        <Button
-                                            variant="contained"
-                                            size="small"
-                                            sx={{ marginRight: 1 }}
-                                        >
-                                            <Typography>Dummy button</Typography>
-                                        </Button>
-                                        <Button variant="outlined" size="small">
-                                            <Typography>Super Smart button</Typography>
-                                        </Button>
-                                    </div>
-                                </Stack>
-                            </ListItemButton>
-                        )}
-                    />
-                </Toolbar>
-            </AppBar>
+            <AllezSearch
+                items={clients}
+                maxWidth={1000}
+                quickFillItems={clients.slice(0, 10)}
+                onItemSelect={onItemSelect}
+                renderResult={(item, onItemSelectCallback) => (
+                    <ListItemButton
+                        dense
+                        onClick={() => {
+                            onItemSelectCallback();
+                        }}
+                    >
+                        <Stack
+                            direction="row"
+                            display="flex"
+                            justifyContent="space-between"
+                            sx={{ width: '100%' }}
+                        >
+                            <ListItemText sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Typography>
+                                    {`${item.label} - ${item.lastVisit.toDateString()}`}
+                                </Typography>
+                            </ListItemText>
+                            <div>
+                                <Button variant="contained" size="small" sx={{ marginRight: 1 }}>
+                                    <Typography>Dummy button</Typography>
+                                </Button>
+                                <Button variant="outlined" size="small">
+                                    <Typography>Super Smart button</Typography>
+                                </Button>
+                            </div>
+                        </Stack>
+                    </ListItemButton>
+                )}
+            />
         </div>
     );
 }

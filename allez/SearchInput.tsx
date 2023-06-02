@@ -4,6 +4,9 @@ import { InputBase, InputBaseProps, SxProps, useTheme } from '@mui/material';
 export const SearchInput = forwardRef(function SearchInput({ ...props }: InputBaseProps, ref) {
     const theme = useTheme();
 
+    /**
+     * Focus the input when the component is mounted.
+     */
     useEffect(() => {
         if (props.id) document.getElementById(props.id)?.focus();
     }, []);
