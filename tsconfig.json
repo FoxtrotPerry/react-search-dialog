@@ -2,8 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-        "@allez": ["allez/"],
-        "@allez/*": ["allez/*"],
+        "@react-search-dialog": ["react-search-dialog/"],
+        "@react-search-dialog/*": ["react-search-dialog/*"],
         "@src": ["src/"],
         "@src/*": ["src/*"]
     },
@@ -23,6 +23,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["allez/*"],
+  "include": ["react-search-dialog/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

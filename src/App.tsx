@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import './App.css';
 import { Button, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
-import { AllezSearch } from '../allez';
+import { Search } from '../react-search-dialog';
 
 export type Client = {
     label: string;
@@ -36,7 +36,7 @@ function App() {
 
     return (
         <div className="App">
-            <AllezSearch
+            <Search
                 items={clients}
                 maxWidth={1000}
                 quickFillItems={clients.slice(0, 10)}

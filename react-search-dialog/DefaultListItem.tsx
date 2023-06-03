@@ -1,14 +1,12 @@
 import { ListItemButton, Typography } from '@mui/material';
-import { AllezSearchItemRequirements } from './AllezSearch';
+import { SearchItemRequirements } from './Search';
 
 type DefaultListItemProps<T> = {
     item: T;
     onClick: () => void;
 };
 
-export const DefaultListItem = <T extends AllezSearchItemRequirements>(
-    props: DefaultListItemProps<T>
-) => {
+export const DefaultListItem = <T extends SearchItemRequirements>(props: DefaultListItemProps<T>) => {
     const { item, onClick } = props;
     return (
         <ListItemButton onClick={onClick}>

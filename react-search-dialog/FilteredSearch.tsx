@@ -1,15 +1,15 @@
 import { useLayoutEffect, useState } from 'react';
 import { VariableSizeList } from 'react-window';
 import { ListSubheader } from '@mui/material';
-import { AllezSearchItemRequirements, AllezSearchProps, ItemHeight } from './AllezSearch';
+import { ItemHeight, SearchItemRequirements, SearchProps } from './Search';
 import { DefaultListItem } from './DefaultListItem';
 import { getItemLabel } from './helpers';
 
 type FilteredSearch<T> = {
     searchResults: T[];
     itemHeight: ItemHeight;
-    onItemSelect: AllezSearchProps<T>['onItemSelect'];
-    renderResult?: AllezSearchProps<T>['renderResult'];
+    onItemSelect: SearchProps<T>['onItemSelect'];
+    renderResult?: SearchProps<T>['renderResult'];
 };
 
 type RenderWindowListItemParams = {
@@ -28,7 +28,7 @@ const ALLEZ_SEARCH_RESULTS_CONTAINER_ID = 'allez-search-results-container';
 /**
  * Returns a list of search results with a basic header.
  */
-export const FilteredSearch = <T extends AllezSearchItemRequirements>(props: FilteredSearch<T>) => {
+export const FilteredSearch = <T extends SearchItemRequirements>(props: FilteredSearch<T>) => {
     const [containerDimensions, setContainerDimensions] = useState<ContainerLengthWidth>({
         h: 0,
         w: 0,

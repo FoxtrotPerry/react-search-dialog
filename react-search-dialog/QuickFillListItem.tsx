@@ -1,6 +1,6 @@
 import { ListItemButton, Stack, Typography } from '@mui/material';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import { AllezSearchItemRequirements } from './AllezSearch';
+import { SearchItemRequirements } from './Search';
 
 type QuickFillListItemProps<T> = {
     label: string;
@@ -8,7 +8,7 @@ type QuickFillListItemProps<T> = {
     onClick: (elem: T) => void;
 };
 
-export const QuickFillListItem = <T extends AllezSearchItemRequirements>(
+export const QuickFillListItem = <T extends SearchItemRequirements>(
     props: QuickFillListItemProps<T>
 ) => {
     return (

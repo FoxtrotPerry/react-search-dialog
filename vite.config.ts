@@ -15,8 +15,8 @@ export default defineConfig({
         minify: true,
         reportCompressedSize: true,
         lib: {
-            entry: resolve(__dirname, 'allez/index.ts'),
-            name: 'Allez',
+            entry: resolve(__dirname, 'react-search-dialog/index.ts'),
+            name: 'react-search-dialog',
             fileName: 'index',
             formats: ['es'],
         },

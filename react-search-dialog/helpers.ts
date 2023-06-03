@@ -1,4 +1,4 @@
-import { AllezSearchItemRequirements } from './AllezSearch';
+import { SearchItemRequirements } from './Search';
 
 const LOCAL_STORAGE_RECENTS_KEY = 'allezRecents';
 
@@ -7,7 +7,7 @@ const LOCAL_STORAGE_RECENTS_KEY = 'allezRecents';
 /**
  * Returns the label of an item, whether it's a string or an object with a label property.
  */
-export const getItemLabel = <T extends AllezSearchItemRequirements>(item: T) => {
+export const getItemLabel = <T extends SearchItemRequirements>(item: T) => {
     return typeof item === 'string' ? item : item.label;
 };
 
@@ -16,7 +16,7 @@ export const getItemLabel = <T extends AllezSearchItemRequirements>(item: T) => 
 /**
  * Returns true if the labels of two items are equal.
  */
-export const listItemLabelsAreEqual = <T extends AllezSearchItemRequirements>(a: T, b: T) => {
+export const listItemLabelsAreEqual = <T extends SearchItemRequirements>(a: T, b: T) => {
     return getItemLabel(a) === getItemLabel(b);
 };
 
@@ -26,7 +26,7 @@ export const listItemLabelsAreEqual = <T extends AllezSearchItemRequirements>(a:
  * Returns the list of recents from local storage.
  * @returns The list of recents from local storage, or an empty array if there are no recents.
  */
-export const getAllezRecents = <T extends AllezSearchItemRequirements>(): T[] => {
+export const getRecents = <T extends SearchItemRequirements>(): T[] => {
     const recentsString = localStorage.getItem(LOCAL_STORAGE_RECENTS_KEY);
     const parsedRecents: T[] = recentsString ? JSON.parse(recentsString) : [];
     return parsedRecents;
@@ -37,8 +37,8 @@ export const getAllezRecents = <T extends AllezSearchItemRequirements>(): T[] =>
  * @param recent The search item to add.
  * @returns The updated list of recents search items.
  */
-export const addAllezRecent = <T extends AllezSearchItemRequirements>(recent: T) => {
-    const recents = getAllezRecents<T>();
+export const addRecent = <T extends SearchItemRequirements>(recent: T) => {
+    const recents = getRecents<T>();
     const newRecentAlreadyExists = recents.some((r) => {
         return listItemLabelsAreEqual(r, recent);
     });
@@ -48,25 +48,25 @@ export const addAllezRecent = <T extends AllezSearchItemRequirements>(recent: T)
         const newRecents = recents.filter((r) => {
             return !listItemLabelsAreEqual(r, recent);
         });
-        setAllezRecents([recent, ...newRecents]);
+        setRecents([recent, ...newRecents]);
     } else {
         // otherwise, just add the new recent to the top of the list
         const newRecents = [recent, ...recents].slice(0, 10);
-        setAllezRecents(newRecents);
+        setRecents(newRecents);
     }
-    return getAllezRecents<T>();
+    return getRecents<T>();
 };
 
 /**
  * Sets the list of recent selections in local storage.
  */
-export const setAllezRecents = <T extends AllezSearchItemRequirements>(recents: T[]) => {
+export const setRecents = <T extends SearchItemRequirements>(recents: T[]) => {
     localStorage.setItem(LOCAL_STORAGE_RECENTS_KEY, JSON.stringify(recents));
 };
 
 /**
  * Clears the list of recent selections from local storage.
  */
-export const clearAllezRecents = () => {
+export const clearRecents = () => {
     localStorage.removeItem(LOCAL_STORAGE_RECENTS_KEY);
 };

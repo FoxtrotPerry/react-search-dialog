@@ -1,5 +1,5 @@
 {
-  "name": "allez",
+  "name": "react-search-dialog",
   "version": "1.0.0",
   "description": "A simple, performant, all-in-one search engine for your React app.",
   "main": "dist/index.js",

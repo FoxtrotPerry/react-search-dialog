@@ -1,13 +1,13 @@
 import { List, ListSubheader } from '@mui/material';
 import { QuickFillListItem } from './QuickFillListItem';
-import { AllezSearchItemRequirements } from './AllezSearch';
+import { SearchItemRequirements } from './Search';
 
 type QuickFillProps<T> = {
     quickFillItems: T[];
     onQuickItemClick: (elem: T) => void;
 };
 
-export const QuickFill = <T extends AllezSearchItemRequirements>(props: QuickFillProps<T>) => {
+export const QuickFill = <T extends SearchItemRequirements>(props: QuickFillProps<T>) => {
     return (
         <List
             component="nav"

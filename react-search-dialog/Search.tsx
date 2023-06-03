@@ -18,7 +18,7 @@ import { FilteredSearch } from './FilteredSearch';
 import { SearchInput } from './SearchInput';
 import { SearchButton } from './SearchButton';
 import { RecentSearches } from './RecentSearches';
-import { addAllezRecent, clearAllezRecents, getAllezRecents } from './helpers';
+import { addRecent, clearRecents, getRecents } from './helpers';
 
 import { PaddedIcon } from './PaddedIcon';
 import CloseIcon from '@mui/icons-material/Close';
@@ -46,9 +46,9 @@ export type ItemHeight = ItemHeightPreset | number;
 /**
  * Type that every item passed into the `items` prop must extend
  */
-export type AllezSearchItemRequirements = { label: string } | string;
+export type SearchItemRequirements = { label: string } | string;
 
-export type AllezSearchProps<T> = {
+export type SearchProps<T> = {
     /**
      * List of items to search through.
      *
@@ -59,7 +59,7 @@ export type AllezSearchProps<T> = {
      * use when searching
      * 2. When using the default `renderResult` function, it can assume that is the
      * item isn't a string, that is can use the `label` property to display the item
-     * @see AllezSearchItemRequirements
+     * @see SearchItemRequirements
      */
     items: T[];
     /**
@@ -128,10 +128,10 @@ export type AllezSearchProps<T> = {
  * - `quickFillItems` - List of items to display in the quick fill section of the search dialog
  * - `itemHeight` - Height of each search result / recent search item
  *
- * @see AllezSearchProps
+ * @see SearchProps
  * @returns JSX.Element
  */
-export const AllezSearch = <T extends AllezSearchItemRequirements>({
+export const Search = <T extends SearchItemRequirements>({
     items,
     buttonProps,
     placeholder,
@@ -143,7 +143,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
     onItemSelect,
     renderResult,
     renderRecent,
-}: AllezSearchProps<T>) => {
+}: SearchProps<T>) => {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
     const [recentSearches, setRecentSearches] = useState<T[]>([]);
@@ -159,7 +159,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
      */
     useEffect(() => {
         setSearchText('');
-        setRecentSearches(getAllezRecents<T>());
+        setRecentSearches(getRecents<T>());
         return () => {
             setSearchText('');
         };
@@ -233,7 +233,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
                 setSearchText(newSearchText);
                 allezInputRef.current.value = newSearchText;
             } else {
-                throw Error('Could not find Allez search input element to update value');
+                throw Error('Could not find react-search-dialog search input element to update value');
             }
         },
         [setSearchText]
@@ -246,7 +246,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
     const onItemSelectCallback = useCallback((item: T) => {
         setOpen(false);
         if (!noHistory) {
-            const newRecents = addAllezRecent(item);
+            const newRecents = addRecent(item);
             setRecentSearches(newRecents);
         }
         onItemSelect(item);
@@ -332,7 +332,7 @@ export const AllezSearch = <T extends AllezSearchItemRequirements>({
                                     toolbarElements={
                                         <Button
                                             onClick={() => {
-                                                clearAllezRecents();
+                                                clearRecents();
                                                 setRecentSearches([]);
                                             }}
                                         >

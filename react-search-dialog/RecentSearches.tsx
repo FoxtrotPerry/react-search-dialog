@@ -1,5 +1,5 @@
 import { ListSubheader, Stack, Typography } from '@mui/material';
-import { AllezSearchItemRequirements, AllezSearchProps, ItemHeight } from './AllezSearch';
+import { ItemHeight, SearchItemRequirements, SearchProps } from './Search';
 import { DefaultListItem } from './DefaultListItem';
 
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
@@ -16,11 +16,11 @@ type RecentSearchProps<T> = {
     /**
      * Callback for when an item is selected.
      */
-    onItemSelect: AllezSearchProps<T>['onItemSelect'];
+    onItemSelect: SearchProps<T>['onItemSelect'];
     /**
      * Optional render function for recent selections.
      */
-    renderRecent?: AllezSearchProps<T>['renderResult'];
+    renderRecent?: SearchProps<T>['renderResult'];
     /**
      * Optional toolbar elements to display above the list of recents.
      */
@@ -30,7 +30,7 @@ type RecentSearchProps<T> = {
 /**
  * Returns list of recent searches with a header and optional toolbar elements.
  */
-export const RecentSearches = <T extends AllezSearchItemRequirements>(props: RecentSearchProps<T>) => {
+export const RecentSearches = <T extends SearchItemRequirements>(props: RecentSearchProps<T>) => {
     const { recents, toolbarElements, onItemSelect, renderRecent } = props;
     return (
         <div
