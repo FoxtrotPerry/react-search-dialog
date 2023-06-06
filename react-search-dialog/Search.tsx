@@ -65,6 +65,7 @@ export type SearchProps<T> = {
     /**
      * Props passed to the search button that opens main search dialog
      * @see ButtonProps
+     * @link https://mui.com/api/button/
      */
     buttonProps?: ButtonProps;
     /**
@@ -135,7 +136,7 @@ export const Search = <T extends SearchItemRequirements>({
     items,
     buttonProps,
     placeholder,
-    itemHeight: itemHeight = ItemHeightPreset.LARGE,
+    itemHeight = ItemHeightPreset.LARGE,
     quickFillItems,
     maxHeight,
     maxWidth,

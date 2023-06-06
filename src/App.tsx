@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import './App.css';
-import { Button, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
+import { Button, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 import { Search } from '../react-search-dialog';
 
 export type Client = {
@@ -42,12 +42,7 @@ function App() {
                 quickFillItems={clients.slice(0, 10)}
                 onItemSelect={onItemSelect}
                 renderResult={(item, onItemSelectCallback) => (
-                    <ListItemButton
-                        dense
-                        onClick={() => {
-                            onItemSelectCallback();
-                        }}
-                    >
+                    <ListItem dense>
                         <Stack
                             direction="row"
                             display="flex"
@@ -60,15 +55,28 @@ function App() {
                                 </Typography>
                             </ListItemText>
                             <div>
-                                <Button variant="contained" size="small" sx={{ marginRight: 1 }}>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    onClick={() => {
+                                        onItemSelectCallback();
+                                    }}
+                                    sx={{ marginRight: 1 }}
+                                >
                                     <Typography>Dummy button</Typography>
                                 </Button>
-                                <Button variant="outlined" size="small">
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={() => {
+                                        onItemSelectCallback();
+                                    }}
+                                >
                                     <Typography>Super Smart button</Typography>
                                 </Button>
                             </div>
                         </Stack>
-                    </ListItemButton>
+                    </ListItem>
                 )}
             />
         </div>
