@@ -155,16 +155,16 @@ export const Search = <T extends SearchItemRequirements>({
     const allezInputRef = useRef<HTMLInputElement | null>(null);
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    /**
-     * Clears the search text when the search is closed
-     */
     useEffect(() => {
-        setSearchText('');
         setRecentSearches(getRecents<T>());
-        return () => {
-            setSearchText('');
-        };
     }, []);
+
+    // /**
+    //  * Clears the search text when the search is closed
+    //  */
+    // useEffect(() => {
+    //     if (!open) setSearchText('');
+    // }, [open]);
 
     /**
      * Instantiates the search engine and keeps the collections of items to search through up to date
@@ -253,6 +253,14 @@ export const Search = <T extends SearchItemRequirements>({
         onItemSelect(item);
     }, []);
 
+    /**
+     * Handles closing the search dialog and resetting the search text
+     */
+    const closeAndReset = useCallback(() => {
+        setOpen(false);
+        setSearchText('');
+    }, []);
+
     return (
         <>
             <SearchButton
@@ -269,6 +277,7 @@ export const Search = <T extends SearchItemRequirements>({
                 open={open}
                 onClose={() => {
                     setOpen(false);
+                    setSearchText('');
                 }}
                 sx={{ '& .MuiDialog-container': { backdropFilter: 'blur(4px)' } }}
                 PaperProps={{
@@ -299,7 +308,7 @@ export const Search = <T extends SearchItemRequirements>({
                             autoFocus
                         />
                         <Divider orientation="vertical" />
-                        <IconButton onClick={() => setOpen(false)} sx={{ borderRadius: 'unset' }}>
+                        <IconButton onClick={closeAndReset} sx={{ borderRadius: 'unset' }}>
                             <CloseIcon />
                         </IconButton>
                     </Stack>

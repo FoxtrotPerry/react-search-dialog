@@ -63,7 +63,7 @@ function App() {
                                     }}
                                     sx={{ marginRight: 1 }}
                                 >
-                                    <Typography>Dummy button</Typography>
+                                    <Typography>Edit Client</Typography>
                                 </Button>
                                 <Button
                                     variant="outlined"
@@ -72,7 +72,7 @@ function App() {
                                         onItemSelectCallback();
                                     }}
                                 >
-                                    <Typography>Super Smart button</Typography>
+                                    <Typography>Go To Records</Typography>
                                 </Button>
                             </div>
                         </Stack>
