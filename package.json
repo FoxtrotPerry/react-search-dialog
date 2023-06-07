@@ -1,6 +1,6 @@
 {
   "name": "react-search-dialog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple, performant, all-in-one search engine for your React app.",
   "homepage": "github.com/foxtrotperry/react-search-dialog#readme",
   "main": "dist/index.js",
