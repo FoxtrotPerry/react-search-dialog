@@ -17,7 +17,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "buildpack": "npm run build && npm pack",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",

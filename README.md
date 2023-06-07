@@ -1,6 +1,6 @@
 # React Search Dialog🔎
 
-**React Search Dialog** is a batteries included search component that aims to make implementing a modern search experience in your application as easy as possible. With a focus on performance and refraining from reinventing the wheel, **React Search Dialog** is built on top of [Fuse.js](https://fusejs.io/) and [react-window](https://github.com/bvaughn/react-window) so that no matter the data size, you'll get the results you're looking for near instantly!
+A batteries included search component that aims to make implementing a modern search experience in your application as easy as possible. With a focus on performance and refraining from reinventing the wheel, **React Search Dialog** is built on top of [Fuse.js](https://fusejs.io/) and [react-window](https://github.com/bvaughn/react-window) so that no matter the data size, you'll get the results you're looking for near instantly!
 
 ## Examples
 
