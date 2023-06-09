@@ -24,6 +24,7 @@ export const SearchButton = ({ buttonProps, mobile }: SearchButtonProps) => {
     ) : (
         <Button
             variant="outlined"
+            focusRipple={false}
             {...buttonProps}
             sx={{ borderRadius: theme.shape.borderRadius, padding: 1, ...buttonProps.sx }}
         >

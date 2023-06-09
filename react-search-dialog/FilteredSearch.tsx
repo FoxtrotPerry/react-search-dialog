@@ -110,7 +110,7 @@ export const FilteredSearch = <T extends SearchItemRequirements>(props: Filtered
                 height={containerDimensions.h - headerHeight}
                 width={containerDimensions.w}
                 itemCount={props.searchResults.length}
-                itemSize={() => 40}
+                itemSize={() => props.itemHeight}
             >
                 {renderWindowListItem}
             </VariableSizeList>
