@@ -53,6 +53,7 @@ export type SearchItemRequirements = { label: string } | string;
  */
 export type RenderItemArgs<T> = {
     item: T;
+    smallDisplay: boolean;
     closeDialog: () => void;
     addToRecents: () => void;
 };
@@ -115,23 +116,35 @@ export type SearchProps<T> = {
     /**
      * Function that renders each search result item
      * @param result The item to render
+     * @param smallDisplay Whether or not the search dialog is in small display mode
      * @param closeDialog Function to call to close the search dialog
      * @param addToRecents Callback function that should be called when the item is selected
      * @returns JSX.Element
      */
-    renderResult?: ({ item, closeDialog, addToRecents }: RenderItemArgs<T>) => JSX.Element;
+    renderResult?: ({
+        item,
+        smallDisplay,
+        closeDialog,
+        addToRecents,
+    }: RenderItemArgs<T>) => JSX.Element;
     /**
      * Function that renders each recent search item
      * @param recent The item to render
+     * @param smallDisplay Whether or not the search dialog is in small display mode
      * @param closeDialog Function to call to close the search dialog
-     * @param addToTopOfRecents Callback function that should be called when the item is selected
+     * @param addToRecents Callback function that should be called when the item is selected
      * @returns JSX.Element
      */
-    renderRecent?: ({ item, closeDialog, addToRecents }: RenderItemArgs<T>) => JSX.Element;
+    renderRecent?: ({
+        item,
+        smallDisplay,
+        closeDialog,
+        addToRecents,
+    }: RenderItemArgs<T>) => JSX.Element;
 };
 
 /**
- * All in one search component!
+ * All in one search dialog component!
  *
  * **Required props:**
  * - `items` - List of items to search through. Each item must have a `label` property or be a string
@@ -171,7 +184,7 @@ export const Search = <T extends SearchItemRequirements>({
     const [searchEngine, setSearchEngine] = useState<Fuse<T>>();
 
     const rsdInputRef = useRef<HTMLInputElement | null>(null);
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const smallDisplay = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         setRecentSearches(getRecents<T>());
@@ -288,11 +301,11 @@ export const Search = <T extends SearchItemRequirements>({
 
     const evaluatedButtonProps = useMemo(() => {
         if (typeof buttonProps === 'function') {
-            return buttonProps(isSmallScreen);
+            return buttonProps(smallDisplay);
         } else {
             return buttonProps;
         }
-    }, [buttonProps, isSmallScreen]);
+    }, [buttonProps, smallDisplay]);
 
     return (
         <>
@@ -303,7 +316,7 @@ export const Search = <T extends SearchItemRequirements>({
                         setOpen(true);
                     },
                 }}
-                mobile={isSmallScreen}
+                mobile={smallDisplay}
             />
             <Dialog
                 id={RSD_POPOVER_ID}
@@ -314,11 +327,11 @@ export const Search = <T extends SearchItemRequirements>({
                     sx: {
                         width: '100%',
                         height: '100%',
-                        maxWidth: isSmallScreen ? 'unset' : maxWidth ?? theme.breakpoints.values.md,
-                        maxHeight: isSmallScreen ? 'unset' : maxHeight ?? theme.breakpoints.values.sm,
+                        maxWidth: smallDisplay ? 'unset' : maxWidth ?? theme.breakpoints.values.md,
+                        maxHeight: smallDisplay ? 'unset' : maxHeight ?? theme.breakpoints.values.sm,
                     },
                 }}
-                fullScreen={isSmallScreen}
+                fullScreen={smallDisplay}
             >
                 <Stack direction="column" height="100%">
                     <Stack direction="row">
@@ -344,7 +357,7 @@ export const Search = <T extends SearchItemRequirements>({
                     </Stack>
                     <Divider />
                     <Grid container sx={{ height: '100%' }}>
-                        {quickFillItems && !isSmallScreen && (
+                        {quickFillItems && !smallDisplay && (
                             <Grid item xs={3}>
                                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
                                     <QuickFill
@@ -360,6 +373,7 @@ export const Search = <T extends SearchItemRequirements>({
                                 <FilteredSearch
                                     searchResults={searchResults}
                                     itemHeight={itemHeight}
+                                    smallDisplay={smallDisplay}
                                     onItemSelect={onItemSelect}
                                     getAddToRecentsFunc={getAddToRecentsFunc}
                                     renderResult={renderResult}
@@ -369,6 +383,7 @@ export const Search = <T extends SearchItemRequirements>({
                                 <RecentSearches
                                     recents={recentSearches}
                                     itemHeight={itemHeight}
+                                    smallDisplay={smallDisplay}
                                     onItemSelect={onItemSelect}
                                     getAddToRecentsFunc={getAddToRecentsFunc}
                                     renderRecent={renderRecent}

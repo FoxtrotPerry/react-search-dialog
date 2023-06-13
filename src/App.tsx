@@ -41,9 +41,9 @@ function App() {
                 maxWidth={1000}
                 quickFillItems={clients.slice(0, 10)}
                 onItemSelect={onItemSelect}
-                buttonProps={(isSmallScreen) => {
+                buttonProps={(smallDisplay) => {
                     return {
-                        color: isSmallScreen ? 'success' : 'error',
+                        color: smallDisplay ? 'success' : 'error',
                     };
                 }}
                 renderResult={({ item, closeDialog, addToRecents }) => (

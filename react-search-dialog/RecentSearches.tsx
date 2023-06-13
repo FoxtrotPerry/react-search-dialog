@@ -14,6 +14,10 @@ type RecentSearchProps<T> = {
      */
     itemHeight: ItemHeight;
     /**
+     * Whether the display is small (e.g. mobile).
+     */
+    smallDisplay: boolean;
+    /**
      * Function to add an item to the list of recents.
      */
     getAddToRecentsFunc: (item: T) => RenderItemArgs<T>['addToRecents'];
@@ -39,8 +43,15 @@ type RecentSearchProps<T> = {
  * Returns list of recent searches with a header and optional toolbar elements.
  */
 export const RecentSearches = <T extends SearchItemRequirements>(props: RecentSearchProps<T>) => {
-    const { recents, toolbarElements, getAddToRecentsFunc, onItemSelect, renderRecent, closeDialog } =
-        props;
+    const {
+        recents,
+        toolbarElements,
+        smallDisplay,
+        getAddToRecentsFunc,
+        onItemSelect,
+        renderRecent,
+        closeDialog,
+    } = props;
     return (
         <div
             style={{
@@ -59,6 +70,7 @@ export const RecentSearches = <T extends SearchItemRequirements>(props: RecentSe
                         {renderRecent ? (
                             renderRecent({
                                 item,
+                                smallDisplay,
                                 addToRecents: getAddToRecentsFunc(item),
                                 closeDialog,
                             })

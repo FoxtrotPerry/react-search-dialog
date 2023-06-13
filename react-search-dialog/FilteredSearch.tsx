@@ -8,6 +8,7 @@ import { getItemLabel } from './helpers';
 type FilteredSearch<T> = {
     searchResults: T[];
     itemHeight: ItemHeight;
+    smallDisplay: boolean;
     getAddToRecentsFunc: (item: T) => RenderItemArgs<T>['addToRecents'];
     onItemSelect: SearchProps<T>['onItemSelect'];
     renderResult?: SearchProps<T>['renderResult'];
@@ -82,6 +83,7 @@ export const FilteredSearch = <T extends SearchItemRequirements>(props: Filtered
                     props.renderResult ? (
                         props.renderResult({
                             item: result,
+                            smallDisplay: props.smallDisplay,
                             addToRecents: props.getAddToRecentsFunc(result),
                             closeDialog: () => props.closeDialog(),
                         })
