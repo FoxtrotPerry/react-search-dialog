@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Fuse from 'fuse.js';
 import {
     Button,
@@ -24,8 +24,8 @@ import { PaddedIcon } from './PaddedIcon';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 
-const ALLEZ_SEARCH_INPUT_ID = 'allez-search-input';
-const ALLEZ_POPOVER_ID = 'allez-popover';
+const RSD_SEARCH_INPUT_ID = 'rsd-search-input';
+const RSD_POPOVER_ID = 'rsd-popover';
 
 // TODO: implement variable row heights using this enum to support react-window's itemSize() function
 /**
@@ -48,6 +48,15 @@ export type ItemHeight = ItemHeightPreset | number;
  */
 export type SearchItemRequirements = { label: string } | string;
 
+/**
+ * Arguments passed into the `renderResult` and `renderRecent` functions
+ */
+export type RenderItemArgs<T> = {
+    item: T;
+    closeDialog: () => void;
+    addToRecents: () => void;
+};
+
 export type SearchProps<T> = {
     /**
      * List of items to search through.
@@ -67,7 +76,7 @@ export type SearchProps<T> = {
      * @see ButtonProps
      * @link https://mui.com/api/button/
      */
-    buttonProps?: ButtonProps;
+    buttonProps?: ButtonProps | ((isSmallScreen: boolean) => ButtonProps);
     /**
      * Place holder displayed in the search input when empty
      * @default 'Search'
@@ -97,23 +106,28 @@ export type SearchProps<T> = {
     noHistory?: boolean;
     /**
      * Callback function that is called when a search result item is selected
+     *
+     * **NOTE: If not using `renderResult`, this prop is required! If using `renderResult`,
+     * this prop does nothing.**
      * @param item The item that was selected
      */
-    onItemSelect: (item: T) => void;
+    onItemSelect?: (item: T) => void;
     /**
      * Function that renders each search result item
      * @param result The item to render
-     * @param onItemSelectCallback Callback function that should be called when the item is selected
+     * @param closeDialog Function to call to close the search dialog
+     * @param addToRecents Callback function that should be called when the item is selected
      * @returns JSX.Element
      */
-    renderResult?: (result: T, onItemSelectCallback: () => void) => JSX.Element;
+    renderResult?: ({ item, closeDialog, addToRecents }: RenderItemArgs<T>) => JSX.Element;
     /**
      * Function that renders each recent search item
      * @param recent The item to render
-     * @param onItemSelectCallback Callback function that should be called when the item is selected
+     * @param closeDialog Function to call to close the search dialog
+     * @param addToTopOfRecents Callback function that should be called when the item is selected
      * @returns JSX.Element
      */
-    renderRecent?: (recent: T, onItemSelectCallback: () => void) => JSX.Element;
+    renderRecent?: ({ item, closeDialog, addToRecents }: RenderItemArgs<T>) => JSX.Element;
 };
 
 /**
@@ -122,6 +136,10 @@ export type SearchProps<T> = {
  * **Required props:**
  * - `items` - List of items to search through. Each item must have a `label` property or be a string
  * - `onItemSelect` - Callback function that is fired when a search result item is selected
+ *
+ * **Conditionally required props:**
+ * - `onItemSelect` - Required if not using `renderResult` prop. Prop is required in this case so that
+ * each search result item has an onClick handler
  *
  * **Recommended optional props:**
  * - `renderResult` - Function that renders each search result item
@@ -152,19 +170,23 @@ export const Search = <T extends SearchItemRequirements>({
     const [searchResults, setSearchResults] = useState<T[]>([]);
     const [searchEngine, setSearchEngine] = useState<Fuse<T>>();
 
-    const allezInputRef = useRef<HTMLInputElement | null>(null);
+    const rsdInputRef = useRef<HTMLInputElement | null>(null);
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         setRecentSearches(getRecents<T>());
     }, []);
 
-    // /**
-    //  * Clears the search text when the search is closed
-    //  */
-    // useEffect(() => {
-    //     if (!open) setSearchText('');
-    // }, [open]);
+    /**
+     * Monitors the `renderResult` and `onItemSelect` props to ensure that at least one of them is provided
+     */
+    useEffect(() => {
+        if (renderResult === undefined && onItemSelect == undefined) {
+            throw Error(
+                'If not providing the `renderResult` prop, the `onItemSelect` prop is required for item click functionality.'
+            );
+        }
+    }, [renderResult, onItemSelect]);
 
     /**
      * Instantiates the search engine and keeps the collections of items to search through up to date
@@ -176,7 +198,7 @@ export const Search = <T extends SearchItemRequirements>({
             );
         }
         searchEngine?.setCollection(items);
-    }, [items]);
+    }, [items, searchEngine]);
 
     /**
      * Updates the search results state when the search text changes.
@@ -188,7 +210,7 @@ export const Search = <T extends SearchItemRequirements>({
         } else {
             setSearchResults(searchEngine?.search(searchText).map((res) => res.item) ?? items);
         }
-    }, [searchText, items]);
+    }, [searchText, items, searchEngine]);
 
     /**
      * Setups up and tears down the keydown event listeners that:
@@ -203,8 +225,8 @@ export const Search = <T extends SearchItemRequirements>({
                     setOpen(false);
                     break;
                 case 'ArrowDown':
-                    if (allezInputRef.current !== null) {
-                        allezInputRef.current.blur();
+                    if (rsdInputRef.current !== null) {
+                        rsdInputRef.current.blur();
                     }
                     break;
                 case 'k':
@@ -229,10 +251,10 @@ export const Search = <T extends SearchItemRequirements>({
      */
     const onQuickFillItemClick = useCallback(
         (item: T) => {
-            if (allezInputRef.current !== null) {
+            if (rsdInputRef.current !== null) {
                 const newSearchText = typeof item === 'string' ? item : item.label;
                 setSearchText(newSearchText);
-                allezInputRef.current.value = newSearchText;
+                rsdInputRef.current.value = newSearchText;
             } else {
                 throw Error('Could not find react-search-dialog search input element to update value');
             }
@@ -244,14 +266,17 @@ export const Search = <T extends SearchItemRequirements>({
      * Handles the click event on a search result item by calling the onItemSelect callback
      * and adding the item to the recent searches list if the noHistory prop is not evoked
      */
-    const onItemSelectCallback = useCallback((item: T) => {
-        setOpen(false);
-        if (!noHistory) {
-            const newRecents = addRecent(item);
-            setRecentSearches(newRecents);
-        }
-        onItemSelect(item);
-    }, []);
+    const getAddToRecentsFunc = useCallback(
+        (item: T) => {
+            return () => {
+                if (!noHistory) {
+                    const newRecents = addRecent(item);
+                    setRecentSearches(newRecents);
+                }
+            };
+        },
+        [noHistory]
+    );
 
     /**
      * Handles closing the search dialog and resetting the search text
@@ -261,11 +286,19 @@ export const Search = <T extends SearchItemRequirements>({
         setSearchText('');
     }, []);
 
+    const evaluatedButtonProps = useMemo(() => {
+        if (typeof buttonProps === 'function') {
+            return buttonProps(isSmallScreen);
+        } else {
+            return buttonProps;
+        }
+    }, [buttonProps, isSmallScreen]);
+
     return (
         <>
             <SearchButton
                 buttonProps={{
-                    ...buttonProps,
+                    ...evaluatedButtonProps,
                     onClick: () => {
                         setOpen(true);
                     },
@@ -273,12 +306,9 @@ export const Search = <T extends SearchItemRequirements>({
                 mobile={isSmallScreen}
             />
             <Dialog
-                id={ALLEZ_POPOVER_ID}
+                id={RSD_POPOVER_ID}
                 open={open}
-                onClose={() => {
-                    setOpen(false);
-                    setSearchText('');
-                }}
+                onClose={closeAndReset}
                 sx={{ '& .MuiDialog-container': { backdropFilter: 'blur(4px)' } }}
                 PaperProps={{
                     sx: {
@@ -294,8 +324,8 @@ export const Search = <T extends SearchItemRequirements>({
                     <Stack direction="row">
                         <PaddedIcon icon={<SearchIcon />} />
                         <SearchInput
-                            id={ALLEZ_SEARCH_INPUT_ID}
-                            ref={allezInputRef}
+                            id={RSD_SEARCH_INPUT_ID}
+                            ref={rsdInputRef}
                             placeholder={placeholder !== undefined ? placeholder : 'Search'}
                             inputProps={{ 'aria-label': 'search' }}
                             onClick={() => {
@@ -330,15 +360,19 @@ export const Search = <T extends SearchItemRequirements>({
                                 <FilteredSearch
                                     searchResults={searchResults}
                                     itemHeight={itemHeight}
-                                    onItemSelect={onItemSelectCallback}
+                                    onItemSelect={onItemSelect}
+                                    getAddToRecentsFunc={getAddToRecentsFunc}
                                     renderResult={renderResult}
+                                    closeDialog={closeAndReset}
                                 />
                             ) : (
                                 <RecentSearches
                                     recents={recentSearches}
                                     itemHeight={itemHeight}
-                                    onItemSelect={onItemSelectCallback}
+                                    onItemSelect={onItemSelect}
+                                    getAddToRecentsFunc={getAddToRecentsFunc}
                                     renderRecent={renderRecent}
+                                    closeDialog={closeAndReset}
                                     toolbarElements={
                                         <Button
                                             onClick={() => {

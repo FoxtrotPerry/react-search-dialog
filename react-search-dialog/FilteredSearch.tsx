@@ -1,15 +1,17 @@
 import { useLayoutEffect, useState } from 'react';
 import { VariableSizeList } from 'react-window';
 import { ListSubheader } from '@mui/material';
-import { ItemHeight, SearchItemRequirements, SearchProps } from './Search';
+import { ItemHeight, RenderItemArgs, SearchItemRequirements, SearchProps } from './Search';
 import { DefaultListItem } from './DefaultListItem';
 import { getItemLabel } from './helpers';
 
 type FilteredSearch<T> = {
     searchResults: T[];
     itemHeight: ItemHeight;
+    getAddToRecentsFunc: (item: T) => RenderItemArgs<T>['addToRecents'];
     onItemSelect: SearchProps<T>['onItemSelect'];
     renderResult?: SearchProps<T>['renderResult'];
+    closeDialog: () => void;
 };
 
 type RenderWindowListItemParams = {
@@ -22,8 +24,8 @@ type ContainerLengthWidth = {
     w: number;
 };
 
-const ALLEZ_SEARCH_RESULTS_HEADER_ID = 'allez-search-results-header';
-const ALLEZ_SEARCH_RESULTS_CONTAINER_ID = 'allez-search-results-container';
+const RSD_SEARCH_RESULTS_HEADER_ID = 'rsd-search-results-header';
+const RSD_SEARCH_RESULTS_CONTAINER_ID = 'rsd-search-results-container';
 
 /**
  * Returns a list of search results with a basic header.
@@ -44,11 +46,11 @@ export const FilteredSearch = <T extends SearchItemRequirements>(props: Filtered
     useLayoutEffect(() => {
         const updateSize = () => {
             const containerDimensions = document
-                .getElementById(ALLEZ_SEARCH_RESULTS_CONTAINER_ID)
+                .getElementById(RSD_SEARCH_RESULTS_CONTAINER_ID)
                 ?.getBoundingClientRect();
 
             const headerDimensions = document
-                .getElementById(ALLEZ_SEARCH_RESULTS_HEADER_ID)
+                .getElementById(RSD_SEARCH_RESULTS_HEADER_ID)
                 ?.getBoundingClientRect();
 
             containerDimensions &&
@@ -78,15 +80,17 @@ export const FilteredSearch = <T extends SearchItemRequirements>(props: Filtered
                 {
                     // If the user has provided a custom render function, use it.
                     props.renderResult ? (
-                        props.renderResult(result, () => {
-                            props.onItemSelect(result);
+                        props.renderResult({
+                            item: result,
+                            addToRecents: props.getAddToRecentsFunc(result),
+                            closeDialog: () => props.closeDialog(),
                         })
                     ) : (
                         // Otherwise, use the default list item.
                         <DefaultListItem
                             item={result}
                             onClick={() => {
-                                props.onItemSelect(result);
+                                props.onItemSelect && props.onItemSelect(result);
                             }}
                         />
                     )
@@ -101,9 +105,9 @@ export const FilteredSearch = <T extends SearchItemRequirements>(props: Filtered
                 width: '100%',
                 height: '100%',
             }}
-            id={ALLEZ_SEARCH_RESULTS_CONTAINER_ID}
+            id={RSD_SEARCH_RESULTS_CONTAINER_ID}
         >
-            <ListSubheader component="div" id={ALLEZ_SEARCH_RESULTS_HEADER_ID}>
+            <ListSubheader component="div" id={RSD_SEARCH_RESULTS_HEADER_ID}>
                 Search Results
             </ListSubheader>
             <VariableSizeList

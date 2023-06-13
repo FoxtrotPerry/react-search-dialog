@@ -11,6 +11,10 @@
     "url": "https://github.com/foxtrotperry",
     "email": "caleb@foxtrotperry.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foxtrotperry/react-search-dialog.git"
+  },
   "files": [
     "dist"
   ],
@@ -49,6 +53,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "path": "^0.12.7",
     "prettier": "^2.7.1",
     "react": "^18.2.0",

@@ -1,5 +1,5 @@
 import { ListSubheader, Stack, Typography } from '@mui/material';
-import { ItemHeight, SearchItemRequirements, SearchProps } from './Search';
+import { ItemHeight, RenderItemArgs, SearchItemRequirements, SearchProps } from './Search';
 import { DefaultListItem } from './DefaultListItem';
 
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
@@ -14,13 +14,21 @@ type RecentSearchProps<T> = {
      */
     itemHeight: ItemHeight;
     /**
-     * Callback for when an item is selected.
+     * Function to add an item to the list of recents.
+     */
+    getAddToRecentsFunc: (item: T) => RenderItemArgs<T>['addToRecents'];
+    /**
+     * Function to call when an item is selected.
      */
     onItemSelect: SearchProps<T>['onItemSelect'];
     /**
      * Optional render function for recent selections.
      */
     renderRecent?: SearchProps<T>['renderResult'];
+    /**
+     * Function to close the search dialog.
+     */
+    closeDialog: () => void;
     /**
      * Optional toolbar elements to display above the list of recents.
      */
@@ -31,7 +39,8 @@ type RecentSearchProps<T> = {
  * Returns list of recent searches with a header and optional toolbar elements.
  */
 export const RecentSearches = <T extends SearchItemRequirements>(props: RecentSearchProps<T>) => {
-    const { recents, toolbarElements, onItemSelect, renderRecent } = props;
+    const { recents, toolbarElements, getAddToRecentsFunc, onItemSelect, renderRecent, closeDialog } =
+        props;
     return (
         <div
             style={{
@@ -48,12 +57,16 @@ export const RecentSearches = <T extends SearchItemRequirements>(props: RecentSe
                 recents.map((item) => (
                     <div key={typeof item === 'string' ? `${item}` : `${item.label}`}>
                         {renderRecent ? (
-                            renderRecent(item, () => props.onItemSelect(item))
+                            renderRecent({
+                                item,
+                                addToRecents: getAddToRecentsFunc(item),
+                                closeDialog,
+                            })
                         ) : (
                             <DefaultListItem
                                 item={item}
                                 onClick={() => {
-                                    onItemSelect(item);
+                                    onItemSelect && onItemSelect(item);
                                 }}
                             />
                         )}

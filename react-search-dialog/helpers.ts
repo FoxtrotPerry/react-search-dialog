@@ -1,6 +1,6 @@
 import { SearchItemRequirements } from './Search';
 
-const LOCAL_STORAGE_RECENTS_KEY = 'allezRecents';
+const LOCAL_STORAGE_RECENTS_KEY = 'rsdRecents';
 
 /* Item Type Helpers */
 

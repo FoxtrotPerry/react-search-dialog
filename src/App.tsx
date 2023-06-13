@@ -20,8 +20,8 @@ function App() {
             const newClients: Client[] = [];
             for (let i = 0; i < 5000; i++) {
                 newClients.push({
-                    label: faker.name.fullName(),
-                    id: faker.datatype.uuid(),
+                    label: faker.person.fullName(),
+                    id: faker.string.uuid(),
                     lastVisit: faker.date.past(),
                 });
             }
@@ -41,7 +41,12 @@ function App() {
                 maxWidth={1000}
                 quickFillItems={clients.slice(0, 10)}
                 onItemSelect={onItemSelect}
-                renderResult={(item, onItemSelectCallback) => (
+                buttonProps={(isSmallScreen) => {
+                    return {
+                        color: isSmallScreen ? 'success' : 'error',
+                    };
+                }}
+                renderResult={({ item, closeDialog, addToRecents }) => (
                     <ListItem dense>
                         <Stack
                             direction="row"
@@ -58,8 +63,10 @@ function App() {
                                 <Button
                                     variant="contained"
                                     size="small"
-                                    onClick={() => {
-                                        onItemSelectCallback();
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        console.log('Edit client');
+                                        closeDialog();
                                     }}
                                     sx={{ marginRight: 1 }}
                                 >
@@ -68,8 +75,11 @@ function App() {
                                 <Button
                                     variant="outlined"
                                     size="small"
-                                    onClick={() => {
-                                        onItemSelectCallback();
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        console.log('Go to records');
+                                        addToRecents();
+                                        closeDialog();
                                     }}
                                 >
                                     <Typography>Go To Records</Typography>

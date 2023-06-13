@@ -20,7 +20,7 @@ export const QuickFill = <T extends SearchItemRequirements>(props: QuickFillProp
                         label={typeof item === 'string' ? item : item.label}
                         quickItem={item}
                         onClick={props.onQuickItemClick}
-                        key={`allez-list-item-${i}`}
+                        key={`rsd-list-item-${i}`}
                     />
                 );
             })}
