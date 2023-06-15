@@ -79,10 +79,21 @@ export type SearchProps<T> = {
      */
     buttonProps?: ButtonProps | ((isSmallScreen: boolean) => ButtonProps);
     /**
+     * Search engine options passed to Fuse.js.
+     *
+     * **NOTE: `label` is preserved as an attribute in the search key array.**
+     */
+    fuseOptions?: Fuse.IFuseOptions<T>;
+    /**
      * Place holder displayed in the search input when empty
      * @default 'Search'
      */
     placeholder?: string;
+    /**
+     * Title for the Quick Fill section of the search dialog
+     * @default 'Quick Fill'
+     */
+    quickFillTitle?: string;
     /**
      * Height of each search result item
      * @default ItemHeightPreset.LARGE
@@ -166,7 +177,9 @@ export type SearchProps<T> = {
 export const Search = <T extends SearchItemRequirements>({
     items,
     buttonProps,
+    fuseOptions,
     placeholder,
+    quickFillTitle,
     itemHeight = ItemHeightPreset.LARGE,
     quickFillItems,
     maxHeight,
@@ -206,12 +219,14 @@ export const Search = <T extends SearchItemRequirements>({
      */
     useEffect(() => {
         if (!searchEngine) {
-            setSearchEngine(
-                new Fuse(items, typeof items?.at(0) !== 'string' ? { keys: ['label'] } : undefined)
-            );
+            const mergedFuseOptions = { threshold: 0.3, ...fuseOptions };
+            if (typeof items?.at(0) !== 'string') {
+                mergedFuseOptions.keys = ['label', ...(fuseOptions?.keys ?? [])];
+            }
+            setSearchEngine(new Fuse(items, mergedFuseOptions));
         }
         searchEngine?.setCollection(items);
-    }, [items, searchEngine]);
+    }, [fuseOptions, items, searchEngine]);
 
     /**
      * Updates the search results state when the search text changes.
@@ -361,6 +376,7 @@ export const Search = <T extends SearchItemRequirements>({
                             <Grid item xs={3}>
                                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
                                     <QuickFill
+                                        quickFillTitle={quickFillTitle}
                                         quickFillItems={quickFillItems}
                                         onQuickItemClick={onQuickFillItemClick}
                                     />

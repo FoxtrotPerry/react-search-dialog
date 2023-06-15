@@ -39,12 +39,16 @@ function App() {
             <Search
                 items={clients}
                 maxWidth={1000}
+                quickFillTitle="Custom Title"
                 quickFillItems={clients.slice(0, 10)}
                 onItemSelect={onItemSelect}
                 buttonProps={(smallDisplay) => {
                     return {
                         color: smallDisplay ? 'success' : 'error',
                     };
+                }}
+                fuseOptions={{
+                    threshold: 0.3,
                 }}
                 renderResult={({ item, closeDialog, addToRecents }) => (
                     <ListItem dense>

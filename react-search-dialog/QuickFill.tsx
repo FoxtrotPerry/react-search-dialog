@@ -4,6 +4,7 @@ import { SearchItemRequirements } from './Search';
 
 type QuickFillProps<T> = {
     quickFillItems: T[];
+    quickFillTitle?: string;
     onQuickItemClick: (elem: T) => void;
 };
 
@@ -11,7 +12,9 @@ export const QuickFill = <T extends SearchItemRequirements>(props: QuickFillProp
     return (
         <List
             component="nav"
-            subheader={<ListSubheader component="div">Quick Fill</ListSubheader>}
+            subheader={
+                <ListSubheader component="div">{props.quickFillTitle ?? 'Quick Fill'}</ListSubheader>
+            }
             sx={{ width: '100%' }}
         >
             {props.quickFillItems.map((item, i) => {
