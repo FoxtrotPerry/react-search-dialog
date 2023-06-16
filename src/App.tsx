@@ -47,9 +47,6 @@ function App() {
                         color: smallDisplay ? 'success' : 'error',
                     };
                 }}
-                fuseOptions={{
-                    threshold: 0.3,
-                }}
                 renderResult={({ item, closeDialog, addToRecents }) => (
                     <ListItem dense>
                         <Stack

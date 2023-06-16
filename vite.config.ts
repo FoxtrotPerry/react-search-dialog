@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { visualizer } from 'rollup-plugin-visualizer';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import typescript from '@rollup/plugin-typescript';
@@ -36,6 +37,10 @@ export default defineConfig({
                     sourceMap: false,
                     declaration: true,
                     outDir: 'dist',
+                }),
+                visualizer({
+                    gzipSize: true,
+                    filename: 'rsd-bundle-analysis.html',
                 }),
             ],
         },
