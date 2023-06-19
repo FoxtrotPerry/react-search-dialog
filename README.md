@@ -4,6 +4,38 @@ A batteries included search component that aims to make implementing a modern se
 
 With a focus on performance and not reinventing the wheel, **React Search Dialog** is built on top of battle tested libraries [Fuse.js](https://fusejs.io/) and [react-window](https://github.com/bvaughn/react-window) so that no matter the item list, you'll get the results you're looking for near instantly!
 
+## Table of Contents
+
+- [Installation](#installation)
+  - [npm](#npm)
+  - [yarn](#yarn)
+  - [pnpm](#pnpm)
+- [Features](#features)
+- [Examples](#examples)
+  - [Basic Usage](#basic-usage)
+  - [Customizing Search Results](#customizing-search-results)
+- [Props](#props)
+
+## Installation
+
+### npm
+
+```bash
+npm install react-search-dialog
+```
+
+### yarn
+
+```bash
+yarn add react-search-dialog
+```
+
+### pnpm
+
+```bash
+pnpm add react-search-dialog
+```
+
 ## Features
 
 - ✅ Handles massive data sets with ease
@@ -16,11 +48,98 @@ With a focus on performance and not reinventing the wheel, **React Search Dialog
 
 ## Examples
 
-🚧 _Coming soon!_
+A couple of examples to get you started!
+
+### Basic Usage
+
+Getting started with react-search-dialog is super simple! The minimum you need to get up and running is:
+
+```tsx
+import { Search } from 'react-search-dialog';
+
+type User = {
+  id: string;
+  name: string;
+  // A label property is required if not using a string array as your item list!
+  label: string;
+};
+
+const items: User[] = [
+  { id: '1', label: 'Item 1', name: 'Justin' },
+  { id: '2', label: 'Item 2', name: 'Nick' },
+  { id: '3', label: 'Item 3', name: 'Dan' },
+  { id: '4', label: 'Item 4', name: 'Adam' },
+  { id: '5', label: 'Item 5', name: 'Caleb' },
+];
+
+const App = () => {
+  return (
+    <Search items={items} onItemSelect={(item) => console.log(item)} />
+  );
+};
+```
+
+### Customizing Search Results
+
+In most cases, you'll want to customize the look and feel of your search results to conform to your existing theming. You can acomplish that by utilizing the `renderResult` prop. The same can be done for recent items by using the `renderRecent` prop as well!
+
+Here's a quick example of how you might customize your search results:
+
+```tsx
+import { useCallback } from 'react';
+import { Search, RenderItemArgs } from 'react-search-dialog';
+
+type CoffeeItem = {
+  id: string;
+  imgUrl: string;
+  label: string; // A label property is required if not using a string array as your item list!
+};
+
+const items: CoffeeItem[] = [
+  { id: '1', label: 'Latte', imgUrl: 'example.com/latte.png' },
+  { id: '2', label: 'Macchiato', imgUrl: 'example.com/macchiiato.png' },
+  { id: '3', label: 'Cappuccino', imgUrl: 'example.com/cappuccino.png' },
+  { id: '4', label: 'Cold Brew', imgUrl: 'example.com/coldbrew.png' },
+  { id: '5', label: 'Affogato', imgUrl: 'example.com/affogato.png' },
+];
+
+const renderResult = useCallback(
+  ({ item, smallDisplay, closeDialog, addToRecents }: RenderItemArgs<Client>) => (
+    <div
+      onClick={() => {
+        // Adds the item to the recent search history
+        // if `noHistory` is not set to true.
+        addToRecents(item);
+        // Clsoes the search dialog.
+        closeDialog();
+      }}
+    >
+      {/* If the display is small, we'll only show the label */}
+      {smallDisplay ? item.label : (
+        <>
+          <img src={item.imgUrl} alt={item.label} />
+          <div>{item.label}</div>
+        </>
+      )}
+    </div>
+  ),
+  []
+);
+
+const App = () => {
+  return (
+    <Search
+      items={items}
+      onItemSelect={(item) => console.log(item)}
+      renderResult={renderResult}
+    />
+  );
+};
+```
 
 ## Props
 
-Below is a table of all props exposed by the `Search` component. The majority of this table is a pared down, more digestible version of the exported type `SearchProps` so
+Below is a table of all props offered by the `Search` component. The majority of this table is a pared down, more digestible version of the exported type `SearchProps` so
 if more detail is needed, please feel free to refer to the type definitions directly!
 
 | Key | |
