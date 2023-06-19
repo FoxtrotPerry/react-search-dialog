@@ -1,13 +1,16 @@
-import { Button, ButtonProps, IconButton, Stack, Typography, useTheme } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
+import { Button as BaseButton, ButtonProps as BaseButtonProps } from '@mui/base';
 import SearchIcon from '@mui/icons-material/Search';
 import { HotkeyChip } from './HotkeyChip';
+
+const DEFAULT_BUTTON_THEME: React.CSSProperties = {};
 
 type SearchButtonProps = {
     /**
      * Props to pass to the button component.
      * @see https://mui.com/material-ui/api/button/#props
      */
-    buttonProps: ButtonProps;
+    buttonProps: BaseButtonProps;
     /**
      * If true, the button will be rendered as just an icon button to conserve space.
      * @default false
@@ -16,17 +19,17 @@ type SearchButtonProps = {
 };
 
 export const SearchButton = ({ buttonProps, mobile }: SearchButtonProps) => {
-    const theme = useTheme();
     return mobile ? (
-        <IconButton variant="outlined" color="primary" {...buttonProps}>
+        <IconButton>
             <SearchIcon />
         </IconButton>
     ) : (
-        <Button
-            variant="outlined"
-            focusRipple={false}
+        <BaseButton
+            // variant="outlined"
+            // focusRipple={false}
+            style={DEFAULT_BUTTON_THEME}
             {...buttonProps}
-            sx={{ borderRadius: theme.shape.borderRadius, padding: 1, ...buttonProps.sx }}
+            // sx={{ borderRadius: theme.shape.borderRadius, padding: 1, ...buttonProps.sx }}
         >
             <Stack spacing={1} direction="row">
                 <SearchIcon />
@@ -35,6 +38,6 @@ export const SearchButton = ({ buttonProps, mobile }: SearchButtonProps) => {
                 </Typography>
                 <HotkeyChip chipText="Ctrl+K" />
             </Stack>
-        </Button>
+        </BaseButton>
     );
 };

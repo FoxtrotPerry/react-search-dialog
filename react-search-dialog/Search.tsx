@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Fuse from 'fuse.js';
 import {
-    Button,
-    ButtonProps,
     debounce,
     Dialog,
     Divider,
@@ -12,6 +10,8 @@ import {
     useMediaQuery,
     useTheme,
 } from '@mui/material';
+
+import { Button as BaseButton, ButtonProps as BaseButtonProps } from '@mui/base';
 
 import { QuickFill } from './QuickFill';
 import { FilteredSearch } from './FilteredSearch';
@@ -74,10 +74,10 @@ export type SearchProps<T> = {
     items: T[];
     /**
      * Props passed to the search button that opens main search dialog
-     * @see ButtonProps
+     * @see BaseButtonProps
      * @link https://mui.com/api/button/
      */
-    buttonProps?: ButtonProps | ((isSmallScreen: boolean) => ButtonProps);
+    buttonProps?: BaseButtonProps | ((isSmallScreen: boolean) => BaseButtonProps);
     /**
      * Search engine options passed to Fuse.js.
      *
@@ -326,6 +326,7 @@ export const Search = <T extends SearchItemRequirements>({
         <>
             <SearchButton
                 buttonProps={{
+                    style: {},
                     ...evaluatedButtonProps,
                     onClick: () => {
                         setOpen(true);
@@ -405,14 +406,14 @@ export const Search = <T extends SearchItemRequirements>({
                                     renderRecent={renderRecent}
                                     closeDialog={closeAndReset}
                                     toolbarElements={
-                                        <Button
+                                        <BaseButton
                                             onClick={() => {
                                                 clearRecents();
                                                 setRecentSearches([]);
                                             }}
                                         >
                                             Clear Recents
-                                        </Button>
+                                        </BaseButton>
                                     }
                                 />
                             )}
