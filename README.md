@@ -1,8 +1,8 @@
-# React Search Dialog🔎 ![Version](https://badgen.net/npm/v/react-search-dialog?icon=npm) ![NPM bundle size](https://img.shields.io/bundlephobia/minzip/react-search-dialog?color=brightgreen)
+# React Search Dialog 🔎 ![Version](https://badgen.net/npm/v/react-search-dialog?icon=npm) ![NPM bundle size](https://img.shields.io/bundlephobia/minzip/react-search-dialog?color=brightgreen)
 
-A batteries included search component that aims to make implementing a modern search experience in your application as easy as possible.
+A batteries included search component that aims to make implementing a modern search experience in your app as easy as possible.
 
-With a focus on performance and not reinventing the wheel, **React Search Dialog** is built on top of battle tested libraries [Fuse.js](https://fusejs.io/) and [react-window](https://github.com/bvaughn/react-window) so that no matter the item list, you'll get the results you're looking for near instantly!
+With a focus on performance and not reinventing the wheel, **React Search Dialog** is built on top of battle tested libraries [Fuse.js](https://fusejs.io/) and [react-window](https://github.com/bvaughn/react-window) so that no matter the item list, you'll get the results you're looking for near instantly with no bloat to your DOM!
 
 ## Table of Contents
 
@@ -48,7 +48,7 @@ pnpm add react-search-dialog
 
 ## Examples
 
-A couple of examples to get you started!
+A couple of examples to show how simple react-search-dialog is to use.
 
 ### Basic Usage
 
@@ -74,14 +74,14 @@ const items: User[] = [
 
 const App = () => {
   return (
-    <Search items={items} onItemSelect={(item) => console.log(item)} />
+    <Search items={items} onItemSelect={(item) => console.log(item.label)} />
   );
 };
 ```
 
 ### Customizing Search Results
 
-In most cases, you'll want to customize the look and feel of your search results to conform to your existing theming. You can acomplish that by utilizing the `renderResult` prop. The same can be done for recent items by using the `renderRecent` prop as well!
+In most cases, you'll want to customize the look and feel of your search results to conform to your existing site styling. You can acomplish that by utilizing the `renderResult` prop. The same can be done for recent items by using the `renderRecent` prop as well!
 
 Here's a quick example of how you might customize your search results:
 
@@ -92,7 +92,8 @@ import { Search, RenderItemArgs } from 'react-search-dialog';
 type CoffeeItem = {
   id: string;
   imgUrl: string;
-  label: string; // A label property is required if not using a string array as your item list!
+  // A label property is required if not using a string array as your item list!
+  label: string;
 };
 
 const items: CoffeeItem[] = [
@@ -109,17 +110,22 @@ const renderResult = useCallback(
       onClick={() => {
         // Adds the item to the recent search history
         // if `noHistory` is not set to true.
-        addToRecents(item);
+        addToRecents();
         // Clsoes the search dialog.
         closeDialog();
+      }}
+      style={{
+        // Since we're utilizing react-window, it might be a good idea
+        // to set a fixed height on your result items in some circumstances.
+        height: '100',
       }}
     >
       {/* If the display is small, we'll only show the label */}
       {smallDisplay ? item.label : (
-        <>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <img src={item.imgUrl} alt={item.label} />
-          <div>{item.label}</div>
-        </>
+          <h3>{item.label}</h3>
+        </div>
       )}
     </div>
   ),
@@ -130,6 +136,7 @@ const App = () => {
   return (
     <Search
       items={items}
+      itemHeight={100}
       onItemSelect={(item) => console.log(item)}
       renderResult={renderResult}
     />

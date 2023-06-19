@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import './App.css';
 import { Button, ListItem, ListItemText, Stack, Typography } from '@mui/material';
-import { Search } from '../react-search-dialog';
+import { RenderItemArgs, Search } from '../react-search-dialog';
 
 export type Client = {
     label: string;
@@ -34,6 +34,42 @@ function App() {
         setSelectedClient(item);
     };
 
+    const renderResult = ({ item, closeDialog, addToRecents }: RenderItemArgs<Client>) => (
+        <ListItem dense>
+            <Stack direction="row" display="flex" justifyContent="space-between" sx={{ width: '100%' }}>
+                <ListItemText sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography>{`${item.label} - ${item.lastVisit.toDateString()}`}</Typography>
+                </ListItemText>
+                <div>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            console.log('Edit client');
+                            closeDialog();
+                        }}
+                        sx={{ marginRight: 1 }}
+                    >
+                        <Typography>Edit Client</Typography>
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            console.log('Go to records');
+                            addToRecents();
+                            closeDialog();
+                        }}
+                    >
+                        <Typography>Go To Records</Typography>
+                    </Button>
+                </div>
+            </Stack>
+        </ListItem>
+    );
+
     return (
         <div className="App">
             <Search
@@ -47,48 +83,7 @@ function App() {
                         color: smallDisplay ? 'success' : 'error',
                     };
                 }}
-                renderResult={({ item, closeDialog, addToRecents }) => (
-                    <ListItem dense>
-                        <Stack
-                            direction="row"
-                            display="flex"
-                            justifyContent="space-between"
-                            sx={{ width: '100%' }}
-                        >
-                            <ListItemText sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Typography>
-                                    {`${item.label} - ${item.lastVisit.toDateString()}`}
-                                </Typography>
-                            </ListItemText>
-                            <div>
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        console.log('Edit client');
-                                        closeDialog();
-                                    }}
-                                    sx={{ marginRight: 1 }}
-                                >
-                                    <Typography>Edit Client</Typography>
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    size="small"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        console.log('Go to records');
-                                        addToRecents();
-                                        closeDialog();
-                                    }}
-                                >
-                                    <Typography>Go To Records</Typography>
-                                </Button>
-                            </div>
-                        </Stack>
-                    </ListItem>
-                )}
+                renderResult={renderResult}
             />
         </div>
     );
