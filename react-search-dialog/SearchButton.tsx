@@ -3,7 +3,7 @@ import { Button as BaseButton, ButtonProps as BaseButtonProps } from '@mui/base'
 import SearchIcon from '@mui/icons-material/Search';
 import { HotkeyChip } from './HotkeyChip';
 
-const DEFAULT_BUTTON_THEME: React.CSSProperties = {};
+import './default_styles.css';
 
 type SearchButtonProps = {
     /**
@@ -25,11 +25,11 @@ export const SearchButton = ({ buttonProps, mobile }: SearchButtonProps) => {
         </IconButton>
     ) : (
         <BaseButton
-            // variant="outlined"
-            // focusRipple={false}
-            style={DEFAULT_BUTTON_THEME}
+            className="rsd-search-button"
+            // style={{
+            //     color: 'red',
+            // }}
             {...buttonProps}
-            // sx={{ borderRadius: theme.shape.borderRadius, padding: 1, ...buttonProps.sx }}
         >
             <Stack spacing={1} direction="row">
                 <SearchIcon />

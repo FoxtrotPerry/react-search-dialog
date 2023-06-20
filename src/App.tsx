@@ -78,11 +78,11 @@ function App() {
                 quickFillTitle="Custom Title"
                 quickFillItems={clients.slice(0, 10)}
                 onItemSelect={onItemSelect}
-                buttonProps={(smallDisplay) => {
-                    return {
-                        color: smallDisplay ? 'success' : 'error',
-                    };
-                }}
+                // buttonProps={(smallDisplay) => {
+                //     return {
+                //         color: smallDisplay ? 'success' : 'error',
+                //     };
+                // }}
                 renderResult={renderResult}
             />
         </div>

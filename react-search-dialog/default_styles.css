@@ -1,0 +1,39 @@
+.rsd-search-button {
+    display: flex;
+    align-items: center;
+    background-color: #fff7;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    /* color: #333; */
+    cursor: pointer;
+    height: 2rem;
+    margin: 0;
+    text-align: center;
+    padding: 0.5rem 0.25rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.rsd-search-button:hover {
+    background-color: #fffa;
+}
+
+.rsd-clear-recents-button {
+    color: #333;
+    background-color: #29b6f600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 2rem;
+    margin: 0;
+    text-align: center;
+    padding: 0.5rem 0.5rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.rsd-clear-recents-button:hover {
+    background-color: #29b6f611;
+}
+
+.rsd-clear-recents-button:focus {
+    background-color: #29b6f644;
+}

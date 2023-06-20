@@ -407,12 +407,13 @@ export const Search = <T extends SearchItemRequirements>({
                                     closeDialog={closeAndReset}
                                     toolbarElements={
                                         <BaseButton
+                                            className="rsd-clear-recents-button"
                                             onClick={() => {
                                                 clearRecents();
                                                 setRecentSearches([]);
                                             }}
                                         >
-                                            Clear Recents
+                                            CLEAR RECENTS
                                         </BaseButton>
                                     }
                                 />
