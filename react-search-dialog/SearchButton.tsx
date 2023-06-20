@@ -2,7 +2,7 @@ import { Button, ButtonProps, IconButton, Stack, Typography, useTheme } from '@m
 import SearchIcon from '@mui/icons-material/Search';
 import { HotkeyChip } from './HotkeyChip';
 
-type SearchButtonProps = {
+export type SearchButtonProps = {
     /**
      * Props to pass to the button component.
      * @see https://mui.com/material-ui/api/button/#props
@@ -15,6 +15,16 @@ type SearchButtonProps = {
     mobile?: boolean;
 };
 
+/**
+ * The default search button for react-search-dialog.
+ * @param buttonProps Props to pass to the button component.
+ * @param mobile If true, the button will be rendered as just an icon button to conserve space.
+ *
+ * @example
+ * ```tsx
+ * <SearchButton buttonProps={{ variant: 'contained', color: 'primary' }} />
+ * ```
+ */
 export const SearchButton = ({ buttonProps, mobile }: SearchButtonProps) => {
     const theme = useTheme();
     return mobile ? (

@@ -13,17 +13,25 @@ export default defineConfig({
         port: 3232,
     },
     build: {
+        manifest: true,
         minify: true,
         reportCompressedSize: true,
         lib: {
-            entry: resolve(__dirname, 'react-search-dialog/index.ts'),
+            entry: [
+                resolve(__dirname, 'react-search-dialog/index.ts'),
+                resolve(__dirname, 'react-search-dialog/Search.tsx'),
+                resolve(__dirname, 'react-search-dialog/SearchButton.tsx'),
+            ],
             name: 'react-search-dialog',
-            fileName: 'index',
+            fileName: (format, entryName) => `${entryName}.js`,
             formats: ['es'],
         },
         rollupOptions: {
             external: ['react', 'react-dom'],
             output: {
+                dir: 'dist',
+                entryFileNames: '[name].js',
+                format: 'es',
                 globals: {
                     react: 'React',
                     'react-dom': 'ReactDOM',

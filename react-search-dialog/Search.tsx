@@ -16,7 +16,7 @@ import {
 import { QuickFill } from './QuickFill';
 import { FilteredSearch } from './FilteredSearch';
 import { SearchInput } from './SearchInput';
-import { SearchButton } from './SearchButton';
+import { SearchButton, SearchButtonProps } from './SearchButton';
 import { RecentSearches } from './RecentSearches';
 import { addRecent, clearRecents, getRecents } from './helpers';
 
@@ -117,6 +117,13 @@ export type SearchProps<T> = {
      */
     noHistory?: boolean;
     /**
+     * Clickable component to use for opening the search dialog
+     * @default SearchButton
+     * @see SearchButton
+     * @see SearchButtonProps
+     */
+    ButtonComponent?: React.ElementType<SearchButtonProps>;
+    /**
      * Callback function that is called when a search result item is selected
      *
      * **NOTE: If not using `renderResult`, this prop is required! If using `renderResult`,
@@ -185,6 +192,7 @@ export const Search = <T extends SearchItemRequirements>({
     maxHeight,
     maxWidth,
     noHistory = false,
+    ButtonComponent = SearchButton,
     onItemSelect,
     renderResult,
     renderRecent,
@@ -324,7 +332,7 @@ export const Search = <T extends SearchItemRequirements>({
 
     return (
         <>
-            <SearchButton
+            <ButtonComponent
                 buttonProps={{
                     ...evaluatedButtonProps,
                     onClick: () => {
